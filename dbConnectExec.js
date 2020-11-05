@@ -1,10 +1,11 @@
 const sql = require('mssql')
+const rockwellConfig = require('./config.js')
 
 const config = {
-    user: 'csu',
-    password: 'Uuxwp7Mcxo7Khy',
-    server: 'cobazsqlcis410.database.windows.net', // You can use 'localhost\\instance' to connect to named instance
-    database: 'RWStudios',
+    user: rockwellConfig.DB.user,
+    password: rockwellConfig.DB.password,
+    server: rockwellConfig.DB.server, // You can use 'localhost\\instance' to connect to named instance
+    database: rockwellConfig.DB.database,
 }
 
 async function executeQuery(aQuery){
