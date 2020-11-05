@@ -1,4 +1,6 @@
 const express = require('express')
+const db = require('./dbConnectExec.js');
+const { response } = require('express');
 
 const app = express();
 
@@ -7,9 +9,16 @@ app.get("/hi", (req,res)=>{
     res.send("hello world")
 })
 
-app.post()
-app.put()
-app.delete()
 
+app.get("/movies", (req,res)=>{
+    //get data from database
+    db.executeQuery(`SELECT *
+    from movie
+    LEFT JOIN genre
+    ON genre.GenrePK = movie.GenreFK`)
+    .then((result)=>{
+        res.status(200).send(result)
+    })
+})
 
 app.listen(5000,()=>{console.log("app is running on port 5000")})
