@@ -3,11 +3,53 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('./dbConnectExec.js');
 const config = require('./config.js')
+
+const auth = require('./middleware/authenticate.js')
+
 const { response } = require('express');
 const { executeQuery } = require('./dbConnectExec.js');
 
 const app = express();
 app.use(express.json())
+
+// const auth = async(req, res, next) => {
+//     console.log(req.header("Authorization"))
+//     next()
+// }
+
+app.post("/reviews", auth, async (req, res)=>{
+    
+    try{var movieFK = req.body.movieFK;
+        var summary = req.body.summary;
+        var rating = req.body.rating;
+    
+        if(!movieFK || !summary || !rating){res.status(400).send("bad request")}
+    
+        summary = summary.replace("'", "''")
+
+        // console.log("here is the contact in /reviews ",req.contact)
+        // res.send("here is your response")}
+
+        let insertQuery = `INSERT INTO Review(Summary, Rating, MovieFK, ContactFK)
+        OUTPUT inserted.ReviewPK, inserted.Summary, inserted.Rating, inserted.MovieFK
+        VALUES('${summary}', '${rating}', '${movieFK}', ${req.contact.ContactPK})`
+
+        let insertedReview = await db.executeQuery(insertQuery)
+
+        // console.log(insertReview)
+        res.status(500).send(insertedReview[0])
+    }
+    catch(error){
+        console.log("error in POST /reviews" , error)
+        res.status(500).send
+    }
+   
+
+})
+
+app.get('/contacts/me', auth, (req, res)=> {
+    res.send(req.contact)
+})
 
 
 app.get("/hi", (req,res)=>{
