@@ -1,6 +1,7 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const cors = require('cors')
 const db = require('./dbConnectExec.js');
 const config = require('./config.js')
 
@@ -9,8 +10,12 @@ const auth = require('./middleware/authenticate.js')
 const { response } = require('express');
 const { executeQuery } = require('./dbConnectExec.js');
 
+//azurewebsites.net, colostate.edu
 const app = express();
 app.use(express.json())
+app.use(cors())
+
+
 
 // const auth = async(req, res, next) => {
 //     console.log(req.header("Authorization"))
@@ -208,4 +213,6 @@ app.get("/movies/:pk", (req, res)=> {
 }
 
 )
-app.listen(5000,()=>{console.log("app is running on port 5000")})
+
+const PORT = process.env.PORT || 5000
+app.listen(PORT,()=>{console.log(`app is running on port ${PORT}`)})
